@@ -1,0 +1,37 @@
+-- ¬ыборки пользователей, у которых количество постов больше, чем у пользовател€ их пригласившего.
+SELECT u1.id, u1.name, u1.posts_qty
+FROM users u1
+JOIN users u2 on u1.invited_by_user_id = u2.id
+WHERE u1.posts_qty > u2.posts_qty;
+
+-- ¬ыборки пользователей, имеющих максимальное количество постов в своей группе.
+SELECT id, name, posts_qty
+FROM users u1
+WHERE u1.posts_qty = (
+  SELECT MAX(posts_qty)
+  FROM users u2
+  WHERE u2.group_id = u1.group_id
+);
+
+-- ¬ыборки групп, количество пользователей в которых превышает 10000.
+SELECT g.id, g.name, count(u.id) as user_count
+FROM groups g
+JOIN users u ON g.id = u.group_id
+GROUP BY g.id, g.name
+HAVING COUNT(u.id) > 10000;
+
+-- ¬ыборки пользователей, у которых пригласивший их пользователь из другой группы.
+SELECT u1.id, u1.name
+FROM users u1
+JOIN users u2 ON u1.invited_by_user_id = u2.id
+WHERE u1.group_id <> u2.group_id;
+
+-- ¬ыборки групп с максимальным количеством постов у пользователей.
+SELECT g.id, g.name, MAX(u.posts_qty) as posts_qty
+FROM groups g
+JOIN users u ON g.id = u.group_id
+GROUP BY g.id, g.name
+HAVING MAX(u.posts_qty) = (
+  SELECT MAX(posts_qty)
+  FROM users
+);

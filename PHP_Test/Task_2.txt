@@ -1,0 +1,13 @@
+-- добавления трех полей
+ALTER TABLE groups
+ADD COLUMN create_date date,
+ADD COLUMN created_by_user_id int,
+ADD COLUMN user_count int;
+
+-- изменения одного поля
+ALTER TABLE users
+ALTER COLUMN name TYPE varchar(100);
+
+-- добавления двух индексов
+CREATE INDEX index_name ON users (name);
+CREATE INDEX index_name ON groups (name);
